@@ -1,7 +1,7 @@
 import React from "react";
-import AddPackage from "./component/AddPackage";
-import ModifyPackage from "./component/ModifyPackage";
-import UpdatePackage from "./component/UpdatePackage";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Login from "./Login";
+import Register from "./Register";
 
 function App() {
   return (
