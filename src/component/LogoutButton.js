@@ -21,11 +21,16 @@ const LogoutButton = ({ onLogoutSuccess }) => {
 
     return (
         <Button
-            fullWidth
             variant="outlined"
-            color="secondary"
+            color="primary"
+        
             onClick={handleLogout}
-            sx={{ mb: 2 }}
+            sx={{
+                      position: "absolute",
+                      top: 16,
+                      left: 16,
+                      fontWeight: "bold",
+                    }}
         >
             登出
         </Button>

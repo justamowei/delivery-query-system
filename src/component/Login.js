@@ -41,14 +41,13 @@ const Login = () => {
 
             setAccount(email);
 
-            const response = await axios.post("http://localhost/api/checkAccount.php", {
                 account: email,
             });
 
             if (response.data.exists) {
                 setAccountExists(true);
                 alert("帳戶已經存在，直接登入！");
-                navigate("/");
+                navigate("/Home");
             } else {
                 setAccountExists(false);
                 alert("首次登入，請設定資料！");
@@ -63,7 +62,6 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post("http://localhost/api/register.php", {
                 account,
                 nickname,
                 role,
@@ -72,7 +70,7 @@ const Login = () => {
             if (response.data.success) {
                 alert("資料儲存成功！");
                 setAccountExists(true);
-                navigate("/");
+                navigate("/Home");
             } else {
                 if (auth.currentUser) {
                     await deleteUser(auth.currentUser);
