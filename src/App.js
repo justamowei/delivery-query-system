@@ -5,13 +5,14 @@ import UpdatePackage from "./component/UpdatePackage";
 
 function App() {
   return (
-      <div>
-          <AddPackage/>
-          <br/>
-          <ModifyPackage/>
-          <br/>
-          <UpdatePackage/>
-      </div>
+      <Router>
+          <div className="App">
+              <Routes>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+              </Routes>
+          </div>
+      </Router>
   );
 }
 
