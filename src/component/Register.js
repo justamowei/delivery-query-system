@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { auth } from "./firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, deleteUser } from "firebase/auth";
 import axios from "axios";
 import {
     Box,
@@ -24,23 +24,27 @@ const Register = () => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
+
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const account = userCredential.user.email;
 
-            await axios.post("http://localhost/api/register.php", {
+            const response = await axios.post("http://localhost/api/register.php", {
                 account,
                 nickname,
                 role,
             });
 
-            alert("註冊成功！");
-
-            navigate("/login");
-
+            if (response.data.success) {
+                alert("註冊成功！");
+                navigate("/login");
+            } else {
+                await deleteUser(userCredential.user);
+                throw new Error("資料庫儲存失敗");
+            }
         } catch (error) {
-            console.error(error);
-            alert("註冊失敗！");
+            console.error("註冊失敗：", error);
+            alert("註冊失敗！請重新嘗試。");
         }
     };
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { auth, provider } from "./firebase";
-import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
+import {signInWithPopup, signInWithEmailAndPassword, deleteUser} from "firebase/auth";
 import axios from "axios";
 import {
     Box,
@@ -27,20 +27,6 @@ const Login = () => {
 
         try {
             await signInWithEmailAndPassword(auth, account, password);
-
-            const response = await axios.post("http://localhost/api/checkAccount.php", {
-                account,
-            });
-
-            if (response.data.exists) {
-                setAccountExists(true);
-                alert("帳戶已經存在，成功登入！");
-                navigate("/");
-            } else {
-                setAccountExists(false);
-                alert("帳戶不存在，請先註冊！");
-                navigate("/register");
-            }
         } catch (error) {
             console.error(error);
             alert("登入失敗，請檢查帳號密碼！");
@@ -77,20 +63,29 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            await axios.post("http://localhost/api/register.php", {
+            const response = await axios.post("http://localhost/api/register.php", {
                 account,
                 nickname,
                 role,
             });
 
-            alert("資料儲存成功！");
-            setAccountExists(true);
-            navigate("/");
+            if (response.data.success) {
+                alert("資料儲存成功！");
+                setAccountExists(true);
+                navigate("/");
+            } else {
+                if (auth.currentUser) {
+                    await deleteUser(auth.currentUser);
+                }
+                setAccountExists(null);
+                throw new Error("資料儲存失敗");
+            }
         } catch (error) {
-            console.error(error);
-            alert("資料儲存失敗！");
+            console.error("儲存失敗：", error);
+            alert("資料儲存失敗！請重試。");
         }
     };
+
 
     return (
         <Box
