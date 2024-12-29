@@ -1,10 +1,10 @@
 <?php
-header("Access-Control-Allow-Origin: http://localhost:3000"); 
-header("Access-Control-Allow-Methods: POST, OPTIONS"); 
-header("Access-Control-Allow-Headers: Content-Type"); 
-header("Access-Control-Allow-Credentials: true"); 
+header("Access-Control-Allow-Origin: http://localhost:3000");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Credentials: true");
 
-require 'db_conn.php'; 
+require 'db_conn.php';
 
 // 接收前端發送的JSON請求並解碼
 $requestData = json_decode(file_get_contents("php://input"), true);
@@ -16,27 +16,13 @@ if (empty($package_ids)) {
     exit;
 }
 
-// 用占位符創建查詢
-$placeholders = implode(',', array_fill(0, count($package_ids), '?'));
-
-// 查詢每個包裹的最新紀錄
 try {
-    $query_deliveryhistory = "
-        SELECT dh.*, p.*
-        FROM deliveryhistory dh
-        JOIN package p ON dh.package_id = p.package_id
-        WHERE dh.package_id IN ($placeholders)
-        AND dh.timestamp = (
-            SELECT MAX(timestamp)
-            FROM deliveryhistory
-            WHERE package_id = dh.package_id
-        )";
-    $stmt_deliveryhistory = $db->prepare($query_deliveryhistory);
-    $stmt_deliveryhistory->execute($package_ids);
-    $result = $stmt_deliveryhistory->fetchAll(PDO::FETCH_ASSOC);
-
-    // 回傳結果
-    echo json_encode($result);
+    $package_ids_string = implode(',', $package_ids);
+    $query = "SELECT GetLatestDeliveryHistoryByIds(?) as result";
+    $stmt = $db->prepare($query);
+    $stmt->execute([$package_ids_string]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC)['result'];
+    echo $result;
 } catch (PDOException $e) {
     echo json_encode(['error' => '錯誤：' . $e->getMessage()]);
 }
