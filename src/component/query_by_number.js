@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, TextField, Typography, Paper } from "@mui/material";
 import Search_Button from "./search_button";
 
-export default function Query_by_number({ onSearch }) {
+export default function Query_by_number({ onSearch, userNickName }) {
   const [packageIds, setPackageIds] = useState({ id1: "", id2: "", id3: "" });
 
   const handleInputChange = (e) => {
@@ -50,7 +50,13 @@ export default function Query_by_number({ onSearch }) {
     >
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="h6">編號查詢</Typography>
+        {userNickName && (
+            <Typography variant="h6" sx={{fontWeight: "bold"}}>
+              當前使用者：{userNickName}
+            </Typography>
+        )}
       </Box>
+
       <Box mt={2} borderBottom={1} borderColor="grey.300" pb={1}>
         <Typography variant="subtitle1">透過編號查詢，可以一次提交多個編號</Typography>
       </Box>

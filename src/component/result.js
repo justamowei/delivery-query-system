@@ -59,7 +59,7 @@ export default function Result() {
 
     const fetchUserRole = async () => {
       try {
-        const response = await axios.get("/delivery-query-system/api/userRole.php");
+        const response = await axios.get("/delivery-query-system/api/get_user.php");
         const data = await response.data;
         if (data.success) {
           setUserRole(data.role);

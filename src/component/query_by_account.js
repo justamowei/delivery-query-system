@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, TextField, Typography, Paper } from "@mui/material";
 import Search_Button from "./search_button";
 
-export default function Query_by_account({ onSearch, userAccount, userRole }) {
+export default function Query_by_account({ onSearch, userAccount, userRole, userNickName }) {
     const [name, setName] = useState(userAccount);
 
     const handleInputChange = (e) => {
@@ -48,6 +48,11 @@ export default function Query_by_account({ onSearch, userAccount, userRole }) {
         >
             <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="h6">帳號查詢</Typography>
+                {userNickName && (
+                    <Typography variant="h6" sx={{fontWeight: "bold"}}>
+                        當前使用者：{userNickName}
+                    </Typography>
+                )}
             </Box>
             <Box mt={2} borderBottom={1} borderColor="grey.300" pb={1}>
                 <Typography variant="subtitle1">透過帳號查詢包裹。</Typography>

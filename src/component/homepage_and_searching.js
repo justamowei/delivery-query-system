@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { Box, Button, Paper } from "@mui/material";
+import {Box, Button, Paper, Typography} from "@mui/material";
 import Query_by_number from "./query_by_number";
 import { useNavigate } from "react-router-dom";
 import LogoutButton from "./LogoutButton";
@@ -12,16 +12,18 @@ export default function Homepage_and_searching() {
     const [openAddPackage, setOpenAddPackage] = useState(false); // 控制 AddPackage 開關
     const [userRole, setUserRole] = useState(null);
     const [userAccount, setUserAccount] = useState(null);
+    const [userNickName, setUserNickName] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserRole = async () => {
             try {
-                const response = await axios.get("/delivery-query-system/api/userRole.php");
+                const response = await axios.get("/delivery-query-system/api/get_user.php");
                 const data = await response.data;
                 if (data.success) {
                     setUserRole(data.role);
                     setUserAccount(data.account);
+                    setUserNickName(data.nickname);
                 } else {
                     console.error("未登入或無法取得角色資訊:", data.error);
                 }
@@ -61,7 +63,6 @@ export default function Homepage_and_searching() {
                     新增包裹資料
                 </Button>
             )}
-
             <Box
                 display="flex"
                 justifyContent="space-between"
@@ -99,10 +100,10 @@ export default function Homepage_and_searching() {
                 )}
 
                 {currentView === "number" && (
-                    <Query_by_number onSearch={handleSearchResult} />
+                    <Query_by_number onSearch={handleSearchResult} userNickName={userNickName}/>
                 )}
                 {currentView === "account" && (
-                    <Query_by_account onSearch={handleSearchResult} userAccount={userAccount} userRole={userRole}/>
+                    <Query_by_account onSearch={handleSearchResult} userAccount={userAccount} userRole={userRole} userNickName={userNickName}/>
                 )}
             </Box>
 

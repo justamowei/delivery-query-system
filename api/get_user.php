@@ -7,11 +7,12 @@ header("Access-Control-Allow-Headers: Content-Type");
 
 session_start();
 
-if (isset($_SESSION["role"]) && isset( $_SESSION["account"])) {
+if (isset($_SESSION["role"]) && isset($_SESSION["account"]) && isset($_SESSION["nickname"])) {
     echo json_encode([
         "success" => true,
         "role" => $_SESSION["role"],
-        "account" => $_SESSION["account"]
+        "account" => $_SESSION["account"],
+        "nickname" => $_SESSION["nickname"],
     ]);
 } else {
     echo json_encode([

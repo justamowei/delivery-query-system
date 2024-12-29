@@ -91,7 +91,7 @@ const Login = () => {
             if (response.data.success) {
                 alert("資料儲存成功！");
                 setAccountExists(true);
-                const response = await axios.post("/delivery-query-system/api/check_account.php", {
+                const response = await axios.post("/delivery-query-system/api/login.php", {
                     account: account,
                 });
                 console.log(response);
