@@ -11,6 +11,7 @@ export default function Homepage_and_searching() {
     const [currentView, setCurrentView] = useState("number");
     const [openAddPackage, setOpenAddPackage] = useState(false); // 控制 AddPackage 開關
     const [userRole, setUserRole] = useState(null);
+    const [userAccount, setUserAccount] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,6 +21,7 @@ export default function Homepage_and_searching() {
                 const data = await response.data;
                 if (data.success) {
                     setUserRole(data.role);
+                    setUserAccount(data.account);
                 } else {
                     console.error("未登入或無法取得角色資訊:", data.error);
                 }
@@ -31,11 +33,10 @@ export default function Homepage_and_searching() {
         fetchUserRole();
     }, []);
 
-    const handleSearchResult = (data) => {
+    const handleSearchResult = (data, source) => {
         console.log("接收到查詢結果:", data);
-        navigate("/results", { state: { results: data } });
+        navigate("/results", { state: { results: data, source } });
     };
-
     return (
         <Box padding={2}>
             <LogoutButton
@@ -101,7 +102,7 @@ export default function Homepage_and_searching() {
                     <Query_by_number onSearch={handleSearchResult} />
                 )}
                 {currentView === "account" && (
-                    <Query_by_account onSearch={handleSearchResult} />
+                    <Query_by_account onSearch={handleSearchResult} userAccount={userAccount} userRole={userRole}/>
                 )}
             </Box>
 

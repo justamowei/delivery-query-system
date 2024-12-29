@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Box, TextField, Typography, Paper } from "@mui/material";
 import Search_Button from "./search_button";
 
-export default function Query_by_account({ onSearch }) {
-    const [name, setName] = useState("");
+export default function Query_by_account({ onSearch, userAccount, userRole }) {
+    const [name, setName] = useState(userAccount);
 
     const handleInputChange = (e) => {
         setName(e.target.value);
@@ -21,12 +21,12 @@ export default function Query_by_account({ onSearch }) {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ name }), // 直接發送單個帳號名稱
+                body: JSON.stringify({ name }),
             });
 
             if (response.ok) {
                 const data = await response.json();
-                onSearch(data); // 回傳查詢結果給父組件
+                onSearch(data, "account");// 回傳查詢結果給父組件
             } else {
                 console.error("請求失敗", response.statusText);
             }
@@ -59,7 +59,8 @@ export default function Query_by_account({ onSearch }) {
                     label="帳號"
                     variant="outlined"
                     sx={{ mb: 2 }}
-                    value={name}
+                    value={userAccount}
+                    disabled={userRole === 'user'}
                     onChange={handleInputChange}
                 />
             </Box>

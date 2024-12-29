@@ -28,7 +28,7 @@ export default function Query_by_number({ onSearch }) {
 
       if (response.ok) {
         const data = await response.json();
-        onSearch(data); // 回傳查詢結果給父組件
+        onSearch(data, "number"); // 回傳查詢結果給父組件
       } else {
         console.error("請求失敗", response.statusText);
       }

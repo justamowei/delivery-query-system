@@ -24,6 +24,7 @@ export default function Result() {
   const location = useLocation();
   const navigate = useNavigate();
   const [results, setResults] = useState(location.state?.results || []);
+  const [source, setSource ] = useState(location.state?.source || []);
 
   const [selectedHistory, setSelectedHistory] = useState(null);
   const [open, setOpen] = useState(false);
@@ -35,13 +36,20 @@ export default function Result() {
   const [openHistoryModify, setOpenHistoryModify] = useState(false);
   const [reload, setReload] = useState(false);
   const [historyReload, setHistoryReload] = useState(false);
+  const [accountReload, setAccountReload] = useState(false);
 
   const [userRole, setUserRole] = useState(null);
+  const [userAccount, setUserAccount] = useState(null);
 
   useEffect(() => {
     if (reload) {
       fetchPackage(results);
       setReload(false);
+    }
+
+    if (accountReload) {
+      fetchPackageByAccount();
+      setAccountReload(false);
     }
 
     if (historyReload) {
@@ -55,6 +63,7 @@ export default function Result() {
         const data = await response.data;
         if (data.success) {
           setUserRole(data.role);
+          setUserAccount(data.account);
         } else {
           console.error("未登入或無法取得角色資訊:", data.error);
         }
@@ -64,9 +73,43 @@ export default function Result() {
     };
 
     fetchUserRole();
-  }, [historyReload, reload, results, selectedHistory]);
+  }, [historyReload, reload, accountReload, results, selectedHistory]);
 
-  // 開啟配送歷史彈窗
+  const handleAddToAccount = async (packageId) => {
+    try {
+      const response = await axios.post(
+          "/delivery-query-system/api/insert_package_to_account.php",
+          { package_id: packageId, account: userAccount }
+      );
+
+      if (response.data.success) {
+        alert(response.data.message);
+      } else {
+        alert("加入帳單清單失敗，" + response.data.message);
+      }
+    } catch (error) {
+      console.error("發生錯誤", error);
+    }
+  };
+
+  const handleRemoveFromAccount = async (packageId) => {
+    try {
+      setAccountReload(true);
+      const response = await axios.post("/delivery-query-system/api/delete_package_from_account.php", {
+        package_id: packageId,
+        account: userAccount,
+      });
+      if (response.data) {
+
+        alert("成功把編號為" + packageId + "的包裹移出收藏清單");
+      } else {
+        alert("移出收藏清單失敗，" + response.data.message);
+      }
+    } catch (error) {
+      console.error("無法移出收藏清單:", error);
+    }
+  };
+
   const handleOpen = async (history) => {
     setSelectedHistory(history);
     console.log('Sending request with ID:', history);
@@ -122,6 +165,21 @@ export default function Result() {
     }
   };
 
+  const fetchPackageByAccount = async () => {
+    try {
+      const response = await axios.post(
+          "/delivery-query-system/api/search_user.php",
+          { name: userAccount },
+          { headers: { "Content-Type": "application/json" } }
+      );
+
+      setResults(response.data);
+      console.log("fetchPackageByAccount的結果:", response.data);
+    } catch (error) {
+      console.error("發生錯誤", error.message);
+    }
+  };
+
   return (
       <Box padding={2}>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -143,9 +201,11 @@ export default function Result() {
                     <TableCell style={{ width: '10%' }}>包裹名稱</TableCell>
                     <TableCell style={{ width: '10%' }}>當前狀態</TableCell>
                     <TableCell style={{ width: '10%' }}>當前位置</TableCell>
-                    <TableCell style={{ width: '15%' }}>收件地址</TableCell>
-                    <TableCell style={{ width: '15%' }}>寄件地址</TableCell>
-                    <TableCell style={{ width: '15%' }}>加入帳單清單</TableCell>
+                    <TableCell style={{ width: '10%' }}>收件地址</TableCell>
+                    <TableCell style={{ width: '10%' }}>寄件地址</TableCell>
+                    <TableCell style={{ width: '10%' }}>
+                      {source === "number" ? "加入收藏清單" : "移出收藏清單"}
+                    </TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                   </TableRow>
@@ -164,7 +224,18 @@ export default function Result() {
                         <TableCell>{result.current_location}</TableCell>
                         <TableCell>{result.receiver_address}</TableCell>
                         <TableCell>{result.sender_address}</TableCell>
-                        <TableCell><Button variant="contained">+</Button></TableCell>
+                        <TableCell>
+                          {source === "number" && (
+                              <Button variant="contained" onClick={() => handleAddToAccount(result.package_id)}>
+                                +
+                              </Button>
+                          )}
+                          {source === "account" && (
+                              <Button variant="contained" onClick={() => handleRemoveFromAccount(result.package_id)}>
+                                -
+                              </Button>
+                          )}
+                        </TableCell>
                         {userRole === "admin" && <>
                           <TableCell>
                             <Button variant="contained" color="primary" onClick={() => handleOpenModify(result)}>
