@@ -129,6 +129,7 @@ export default function Result() {
                     <TableCell style={{ width: '10%' }}>當前位置</TableCell>
                     <TableCell style={{ width: '15%' }}>收件地址</TableCell>
                     <TableCell style={{ width: '15%' }}>寄件地址</TableCell>
+                    <TableCell style={{ width: '15%' }}>加入帳單清單</TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                   </TableRow>
@@ -147,6 +148,7 @@ export default function Result() {
                         <TableCell>{result.current_location}</TableCell>
                         <TableCell>{result.receiver_address}</TableCell>
                         <TableCell>{result.sender_address}</TableCell>
+                        <TableCell><Button variant="contained">+</Button></TableCell>
                         <TableCell>
                           <Button variant="contained" color="primary" onClick={() => handleOpenModify(result)}>
                             修改

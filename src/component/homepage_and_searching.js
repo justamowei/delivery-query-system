@@ -4,6 +4,7 @@ import Query_by_number from "./query_by_number";
 import { useNavigate } from "react-router-dom";
 import LogoutButton from "./LogoutButton";
 import AddPackage from "./CRD_operation/AddPackage";
+import Query_by_account from "./query_by_account";
 
 export default function Homepage_and_searching() {
     const [currentView, setCurrentView] = useState("number");
@@ -58,16 +59,27 @@ export default function Homepage_and_searching() {
                         <Button
                             variant={currentView === "number" ? "contained" : "outlined"}
                             color={currentView === "number" ? "primary" : "default"}
-                            sx={{ marginBottom: 4 }}
+                            sx={{ marginBottom: 2 }}
                             onClick={() => setCurrentView("number")}
                         >
                             透過編號查詢
+                        </Button>
+                        <Button
+                            variant={currentView === "account" ? "contained" : "outlined"}
+                            color={currentView === "account" ? "primary" : "default"}
+                            sx={{ marginBottom: 2 }}
+                            onClick={() => setCurrentView("account")}
+                        >
+                            透過個人帳號查詢
                         </Button>
                     </Paper>
                 )}
 
                 {currentView === "number" && (
                     <Query_by_number onSearch={handleSearchResult} />
+                )}
+                {currentView === "account" && (
+                    <Query_by_account onSearch={handleSearchResult} />
                 )}
             </Box>
 
