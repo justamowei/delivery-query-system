@@ -123,7 +123,8 @@ function ModifyAndDeleteDeliveryHistory({ open, onClose, rowData, setHistoryRelo
                     fullWidth
                     variant="outlined"
                     value={form.new_timestamp}
-                    onChange={(e) => setForm({ ...form, new_timestamp: e.target.value })}
+                    disabled
+                    // onChange={(e) => setForm({ ...form, new_timestamp: e.target.value })}
                 />
             </DialogContent>
             <DialogActions>

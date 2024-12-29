@@ -20,7 +20,7 @@ if (is_null($account) || trim($account) === "") {
 }
 
 // 查詢packageaccount表格來獲取所有對應的包裹ID
-$query_package_ids = "SELECT package_id FROM packageaccount WHERE account = ?";
+$query_package_ids = "SELECT package_id FROM packagetoaccount WHERE account = ?";
 $stmt_package_ids = $db->prepare($query_package_ids);
 $stmt_package_ids->execute([$account]);
 $package_ids = $stmt_package_ids->fetchAll(PDO::FETCH_COLUMN, 0); // 返回所有對應的package_id的陣列

@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import { Box, Button, Paper } from "@mui/material";
 import Query_by_number from "./query_by_number";
-import Query_by_account from "./query_by_account";
 import { useNavigate } from "react-router-dom";
 import LogoutButton from "./LogoutButton";
 import AddPackage from "./CRD_operation/AddPackage";
 import axios from "axios";
+import Query_by_account from "./query_by_account";
 
 export default function Homepage_and_searching() {
     const [currentView, setCurrentView] = useState("number");
@@ -60,6 +60,7 @@ export default function Homepage_and_searching() {
                     新增包裹資料
                 </Button>
             )}
+
             <Box
                 display="flex"
                 justifyContent="space-between"
@@ -104,7 +105,6 @@ export default function Homepage_and_searching() {
                 )}
             </Box>
 
-            {/* AddPackage 對話框 */}
             <AddPackage open={openAddPackage} onClose={() => setOpenAddPackage(false)} />
         </Box>
     );
