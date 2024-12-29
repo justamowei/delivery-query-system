@@ -36,6 +36,8 @@ export default function Result() {
   const [reload, setReload] = useState(false);
   const [historyReload, setHistoryReload] = useState(false);
 
+  const [userRole, setUserRole] = useState(null);
+
   useEffect(() => {
     if (reload) {
       fetchPackage(results);
@@ -47,7 +49,21 @@ export default function Result() {
       setHistoryReload(false);
     }
 
+    const fetchUserRole = async () => {
+      try {
+        const response = await axios.get("/delivery-query-system/api/userRole.php");
+        const data = await response.data;
+        if (data.success) {
+          setUserRole(data.role);
+        } else {
+          console.error("未登入或無法取得角色資訊:", data.error);
+        }
+      } catch (error) {
+        console.error("無法取得角色資訊:", error);
+      }
+    };
 
+    fetchUserRole();
   }, [historyReload, reload, results, selectedHistory]);
 
   // 開啟配送歷史彈窗
@@ -109,7 +125,7 @@ export default function Result() {
   return (
       <Box padding={2}>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <Button variant="outlined" color="primary" onClick={() => navigate("/Home")}>
+          <Button variant="outlined" color="primary" onClick={() => navigate("/")}>
             返回查詢
           </Button>
           <Typography variant="h6" fontSize="1rem">
@@ -147,16 +163,19 @@ export default function Result() {
                         <TableCell>{result.receiver_address}</TableCell>
                         <TableCell>{result.sender_address}</TableCell>
                         <TableCell><Button variant="contained">+</Button></TableCell>
-                        <TableCell>
-                          <Button variant="contained" color="primary" onClick={() => handleOpenModify(result)}>
-                            修改
-                          </Button>
-                        </TableCell>
-                        <TableCell>
-                          <Button variant="contained" color="primary" onClick={() => handleOpenUpdate(result)}>
-                            更新
-                          </Button>
-                        </TableCell>
+                        {userRole === "admin" && <>
+                          <TableCell>
+                            <Button variant="contained" color="primary" onClick={() => handleOpenModify(result)}>
+                              修改
+                            </Button>
+                          </TableCell>
+                          <TableCell>
+                            <Button variant="contained" color="primary" onClick={() => handleOpenUpdate(result)}>
+                              更新
+                            </Button>
+                          </TableCell>
+                        </>
+                        }
                       </TableRow>
                   ))}
                 </TableBody>
@@ -205,9 +224,10 @@ export default function Result() {
                               <Typography>現在位置: {detail.current_location}</Typography>
                               <Typography>日期: {new Date(detail.timestamp).toLocaleString()}</Typography>
                             </Box>
-                            <Button variant="contained" onClick={() => handleOpenHistoryModify(detail)} sx={{margin: "5px"}}>
+                            {userRole === "admin" && <Button variant="contained" onClick={() => handleOpenHistoryModify(detail)} sx={{margin: "5px"}}>
                               修改
                             </Button>
+                            }
                           </Box>
                           {index < statusDetails.length - 1 && <hr/>}
                         </div>
