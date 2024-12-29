@@ -64,7 +64,7 @@ export default function Query_by_account({ onSearch, userAccount, userRole, user
                     label="帳號"
                     variant="outlined"
                     sx={{ mb: 2 }}
-                    value={userAccount}
+                    value={name}
                     disabled={userRole === 'user'}
                     onChange={handleInputChange}
                 />
