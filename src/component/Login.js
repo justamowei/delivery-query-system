@@ -27,7 +27,21 @@ const Login = () => {
 
         try {
             await signInWithEmailAndPassword(auth, account, password);
-            navigate("/home");
+            const response = await axios.post("/delivery-query-system/api/check_account.php", {
+                account: account,
+            });
+            if (response.data.exists) {
+                setAccountExists(true);
+                alert("帳戶已經存在，直接登入！");
+                const response = await axios.post("/delivery-query-system/api/login.php", {
+                    account: account,
+                });
+                console.log(response);
+                navigate("/");
+            } else {
+                setAccountExists(false);
+                alert("資料庫存取失敗，請重新填寫詳細資料！");
+            }
         } catch (error) {
             console.error(error);
             alert("登入失敗，請檢查帳號密碼！");
@@ -49,7 +63,11 @@ const Login = () => {
             if (response.data.exists) {
                 setAccountExists(true);
                 alert("帳戶已經存在，直接登入！");
-                navigate("/Home");
+                const response = await axios.post("/delivery-query-system/api/login.php", {
+                    account: email,
+                });
+                console.log(response);
+                navigate("/");
             } else {
                 setAccountExists(false);
                 alert("首次登入，請設定資料！");
@@ -73,7 +91,11 @@ const Login = () => {
             if (response.data.success) {
                 alert("資料儲存成功！");
                 setAccountExists(true);
-                navigate("/Home");
+                const response = await axios.post("/delivery-query-system/api/check_account.php", {
+                    account: account,
+                });
+                console.log(response);
+                navigate("/");
             } else {
                 if (auth.currentUser) {
                     await deleteUser(auth.currentUser);

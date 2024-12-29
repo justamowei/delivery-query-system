@@ -1,15 +1,35 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { Box, Button, Paper } from "@mui/material";
 import Query_by_number from "./query_by_number";
 import { useNavigate } from "react-router-dom";
 import LogoutButton from "./LogoutButton";
 import AddPackage from "./CRD_operation/AddPackage";
+import axios from "axios";
 import Query_by_account from "./query_by_account";
 
 export default function Homepage_and_searching() {
     const [currentView, setCurrentView] = useState("number");
     const [openAddPackage, setOpenAddPackage] = useState(false); // 控制 AddPackage 開關
+    const [userRole, setUserRole] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchUserRole = async () => {
+            try {
+                const response = await axios.get("/delivery-query-system/api/userRole.php");
+                const data = await response.data;
+                if (data.success) {
+                    setUserRole(data.role);
+                } else {
+                    console.error("未登入或無法取得角色資訊:", data.error);
+                }
+            } catch (error) {
+                console.error("無法取得角色資訊:", error);
+            }
+        };
+
+        fetchUserRole();
+    }, []);
 
     const handleSearchResult = (data) => {
         console.log("接收到查詢結果:", data);
@@ -25,19 +45,21 @@ export default function Homepage_and_searching() {
                 }}
             />
 
-            <Button
-                variant="contained"
-                color="primary"
-                sx={{
-                    position: "absolute",
-                    top: 16,
-                    right: 16,
-                    fontWeight: "bold",
-                }}
-                onClick={() => setOpenAddPackage(true)} // 打開 AddPackage
-            >
-                新增包裹資料
-            </Button>
+            { userRole === "admin" && (
+                <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                        position: "absolute",
+                        top: 16,
+                        right: 16,
+                        fontWeight: "bold",
+                    }}
+                    onClick={() => setOpenAddPackage(true)} // 打開 AddPackage
+                >
+                    新增包裹資料
+                </Button>
+            )}
 
             <Box
                 display="flex"

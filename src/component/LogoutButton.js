@@ -4,6 +4,7 @@ import { Button } from "@mui/material";
 import { signOut } from "firebase/auth";
 import { auth } from "./Firebase";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const LogoutButton = ({ onLogoutSuccess }) => {
     const navigate = useNavigate();
@@ -12,6 +13,7 @@ const LogoutButton = ({ onLogoutSuccess }) => {
         try {
             await signOut(auth);
             onLogoutSuccess();
+            await axios.post("/delivery-query-system/api/logout.php");
             navigate("/login");
         } catch (error) {
             console.error("Logout failed:", error);
