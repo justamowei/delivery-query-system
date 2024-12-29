@@ -1,5 +1,5 @@
 <?php
-require 'db_conn.php'; // 資料庫連線檔案
+require 'db_conn.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");

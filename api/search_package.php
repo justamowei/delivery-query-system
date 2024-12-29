@@ -1,10 +1,10 @@
 <?php
-header("Access-Control-Allow-Origin: http://localhost:3000"); // 限制為您的前端地址
-header("Access-Control-Allow-Methods: POST, OPTIONS"); // 允許的HTTP方法
-header("Access-Control-Allow-Headers: Content-Type"); // 允許的自定義頭
-header("Access-Control-Allow-Credentials: true"); // 如果需要跨域時攜帶Cookie，則設定為true
+header("Access-Control-Allow-Origin: http://localhost:3000"); 
+header("Access-Control-Allow-Methods: POST, OPTIONS"); 
+header("Access-Control-Allow-Headers: Content-Type"); 
+header("Access-Control-Allow-Credentials: true"); 
 
-require 'db_conn.php'; // 引入資料庫連接
+require 'db_conn.php'; 
 
 // 接收前端發送的JSON請求並解碼
 $requestData = json_decode(file_get_contents("php://input"), true);

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, Paper } from "@mui/material";
 import Query_by_number from "./query_by_number";
-import Query_by_account from "./query_by_account";
 import { useNavigate } from "react-router-dom";
 import LogoutButton from "./LogoutButton";
 import AddPackage from "./CRD_operation/AddPackage";
@@ -25,7 +24,6 @@ export default function Homepage_and_searching() {
                 }}
             />
 
-            {/* 新增包裹按鈕 */}
             <Button
                 variant="contained"
                 color="primary"
@@ -60,18 +58,10 @@ export default function Homepage_and_searching() {
                         <Button
                             variant={currentView === "number" ? "contained" : "outlined"}
                             color={currentView === "number" ? "primary" : "default"}
-                            sx={{ marginBottom: 2 }}
+                            sx={{ marginBottom: 4 }}
                             onClick={() => setCurrentView("number")}
                         >
                             透過編號查詢
-                        </Button>
-                        <Button
-                            variant={currentView === "account" ? "contained" : "outlined"}
-                            color={currentView === "account" ? "primary" : "default"}
-                            sx={{ marginBottom: 2 }}
-                            onClick={() => setCurrentView("account")}
-                        >
-                            透過個人帳號查詢
                         </Button>
                     </Paper>
                 )}
@@ -79,12 +69,8 @@ export default function Homepage_and_searching() {
                 {currentView === "number" && (
                     <Query_by_number onSearch={handleSearchResult} />
                 )}
-                {currentView === "account" && (
-                    <Query_by_account onSearch={handleSearchResult} />
-                )}
             </Box>
 
-            {/* AddPackage 對話框 */}
             <AddPackage open={openAddPackage} onClose={() => setOpenAddPackage(false)} />
         </Box>
     );
